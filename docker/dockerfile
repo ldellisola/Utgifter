@@ -19,7 +19,7 @@ ENV ASPNETCORE_URLS=http://+:80
 ENV ASPNETCORE_ENVIRONMENT=Production
 WORKDIR /app
 
-COPY --from=build-backend /src/app ./
+COPY --from=build-backend /app ./
 COPY --from=build-frontend /src/dist ./wwwroot
 ENTRYPOINT ["dotnet", "Utgifter.Api.dll"]
 
