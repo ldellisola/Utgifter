@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build-backend
+WORKDIR /src
+COPY ./src/Utgifter.sln .
+COPY ./src/Utgifter.Api ./Utgifter.Api
+
+RUN dotnet restore Utgifter.sln
+RUN dotnet build -c Release --no-restore
+RUN dotnet publish ./Utgifter.Api/Utgifter.Api.csproj -c Release -o /app --no-restore --no-build
+
+FROM oven/bun:1-alpine as build-frontend
+WORKDIR /src
+COPY ./src/Utgifter.Site/ .
+
+RUN bun install
+RUN bunx --bun vite build
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS runtime
+ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_ENVIRONMENT=Production
+WORKDIR /app
+
+COPY --from=build-backend /src/app ./
+COPY --from=build-frontend /src/dist ./wwwroot
+ENTRYPOINT ["dotnet", "Utgifter.Api.dll"]
+
+LABEL org.opencontainers.image.source=https://github.com/ldellisola/utgifter
+LABEL org.opencontainers.image.description="Utgifter (Expenses) is an expenses visualization tool"
+LABEL org.opencontainers.image.licenses=MIT
