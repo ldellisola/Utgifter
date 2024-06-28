@@ -52,9 +52,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             }
             
             // if it doesn't, add it to newExpenses
-            var category = await GetCategory(expense.Store);
             var rule = await GetRule(expense.Store);
-            
+            var category = await GetCategory(rule?.NewStore ?? expense.Store);
             newExpenses.Add(expense with
             {
                 Category = rule?.NewCategory ?? category,
@@ -75,7 +74,14 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             $"""
              select id, expectedstore, newstore, newcategory, shared,trip
              from rules
-             where expectedStore = @store
+             where (expectedstore NOT LIKE '*%' AND expectedstore NOT LIKE '%*' AND expectedstore = @store)
+             OR 
+             (expectedstore LIKE '%*' AND expectedstore NOT LIKE '*%' AND @store LIKE SUBSTRING(expectedstore FROM 1 FOR LENGTH(expectedstore)-1) || '%')
+             OR
+             (expectedstore LIKE '*%' AND expectedstore NOT LIKE '%*' AND @store LIKE '%' || SUBSTRING(expectedstore FROM 2))
+             OR
+             (expectedstore LIKE '*%' AND expectedstore LIKE '%*' AND @store LIKE '%' || SUBSTRING(expectedstore FROM 2 FOR LENGTH(expectedstore)-2) || '%')
+             
              """,
             new {store}
         );
