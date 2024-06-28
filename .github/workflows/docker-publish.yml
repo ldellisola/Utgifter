@@ -2,7 +2,11 @@ name: Create Docker Image
 
 on:
   push:
+    tags: ["v*.*.*"]
     branches: ["main"]
+    paths:
+      - src/**
+      - docker/Dockerfile
   pull_request:
     branches: ["main"]
   workflow_dispatch:
