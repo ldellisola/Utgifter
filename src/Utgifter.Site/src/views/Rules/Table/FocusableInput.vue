@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useParentElement } from '@vueuse/core'
-import { nextTick, ref, getCurrentInstance, onMounted } from 'vue'
+import { nextTick, ref, onMounted } from 'vue'
 
 const model = defineModel()
 

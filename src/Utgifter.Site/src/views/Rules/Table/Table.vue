@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import Button from '@/components/ui/button.vue'
-import Header from './header.vue'
-import Cell from './cell.vue'
+import Header from './Header.vue'
+import Cell from './Cell.vue'
 import type { Rule } from '@/api/rules'
-import focusInput from './focusInput.vue'
-import focusCategorySelect from './focusCategorySelect.vue'
+import FocusableInput from './FocusableInput.vue'
+import FocusableAutoComplete from './FocusableAutoComplete.vue'
 import { getCategories } from '@/api/categories'
 
 type Props = { rules: Rule[] }
@@ -67,9 +67,9 @@ categories.value = await getCategories()
       <tbody>
         <tr v-for="rule in rules" :key="rule.id" class="hover:bg-gray-100">
           <Cell> {{ rule.expectedStore }}</Cell>
-          <Cell> <focusInput v-model="rule.newStore" @change="edit(rule)" /> </Cell>
+          <Cell> <FocusableInput v-model="rule.newStore" @change="edit(rule)" /> </Cell>
           <Cell>
-            <focusCategorySelect
+            <FocusableAutoComplete
               class="inline-flex"
               :values="categories"
               v-model="rule.newCategory"

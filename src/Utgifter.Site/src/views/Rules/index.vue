@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Button from '@/components/ui/button.vue'
-import CreateRule from '@/components/createRule.vue'
-import RulesTable from '@/components/RulesTable'
+import NewRule from './NewRule.vue'
+import RulesTable from './Table'
 import { getRules, updateRule, deleteRule, type Rule } from '@/api/rules'
 import { ref } from 'vue'
 
@@ -26,7 +26,7 @@ async function edit(rule: Rule, page: number, size: number) {
         <RouterLink to="/">Go back</RouterLink>
       </Button>
     </div>
-    <CreateRule @created="loadRules" />
+    <NewRule @created="loadRules" />
     <RulesTable :rules="rules" @load="loadRules" @remove="remove" @edit="edit" />
   </div>
 </template>

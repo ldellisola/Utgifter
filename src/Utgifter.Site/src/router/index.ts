@@ -1,6 +1,6 @@
 import ExpenseProcessing from '@/views/ExpenseProcessing.vue'
 import Expenses from '@/views/Expenses.vue'
-import Rules from '@/views/Rules.vue'
+import Rules from '@/views/Rules/index.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
