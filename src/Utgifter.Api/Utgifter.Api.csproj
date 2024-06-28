@@ -16,4 +16,16 @@
       <PackageReference Include="NPOI" Version="2.7.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="DataBase\Migrations\02-CreateTransformations.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="DataBase\Migrations\01-CreateExpenseTables.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="DataBase\Migrations\02-CreateRules.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
