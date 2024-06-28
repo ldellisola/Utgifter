@@ -53,12 +53,33 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             
             // if it doesn't, add it to newExpenses
             var category = await GetCategory(expense.Store);
-            newExpenses.Add(expense with {Category = category});
+            var rule = await GetRule(expense.Store);
+            
+            newExpenses.Add(expense with
+            {
+                Category = rule?.NewCategory ?? category,
+                Store = rule?.NewStore ?? expense.Store,
+                Shared = rule?.Shared ?? expense.Shared,
+                Trip = rule?.Trip ?? expense.Trip
+            });
         }
         
         await SendOkAsync(new(existingExpenses, newExpenses), ct);
     }
+    
 
+    private async Task<Rule?> GetRule(string store)
+    {
+        await using var connection = new NpgsqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<Rule>(
+            $"""
+             select id, expectedstore, newstore, newcategory, shared,trip
+             from rules
+             where expectedStore = @store
+             """,
+            new {store}
+        );
+    }
     private async Task<string?> GetCategory(string store)
     {
         await using var connection = new NpgsqlConnection(_connectionString);

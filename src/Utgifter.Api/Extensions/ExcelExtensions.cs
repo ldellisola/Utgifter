@@ -23,7 +23,10 @@ public static class ExcelExtensions
             ISheet dSheet = destination.CreateSheet(sSheet.SheetName);
 
             try { dSheet.ForceFormulaRecalculation = sSheet.ForceFormulaRecalculation; }
-            catch { }
+            catch
+            {
+                // ignored
+            }
 
             ConvertSheet(sSheet, dSheet);
 
@@ -38,12 +41,18 @@ public static class ExcelExtensions
 
                 destination.SetSheetHidden(i, state);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         try { destination.SetActiveSheet(source.ActiveSheetIndex); }
-        catch { }
-        
+        catch
+        {
+            // ignored
+        }
+
         destination.Write(destinationStream,true);
     }
     
@@ -54,14 +63,20 @@ public static class ExcelExtensions
         for(int i = sSheet.FirstRowNum; i <= sSheet.LastRowNum; i++)
         {
             try { ConvertRow(sSheet.GetRow(i), dSheet.CreateRow(i)); }
-            catch { }
+            catch
+            {
+                // ignored
+            }
 
             try
             {
                 if (sSheet.GetRow(i) != null && numberOfColumns < sSheet.GetRow(i).LastCellNum)
                     numberOfColumns = sSheet.GetRow(i).LastCellNum;
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         for(int i = 1; i <= numberOfColumns;i++)
@@ -71,13 +86,19 @@ public static class ExcelExtensions
                 if (sSheet.IsColumnHidden(i))
                     dSheet.SetColumnHidden(i, true);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         for (int i = 0; i < sSheet.NumMergedRegions; i++)
         {
             try { dSheet.AddMergedRegion(sSheet.GetMergedRegion(i)); }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
     }
 

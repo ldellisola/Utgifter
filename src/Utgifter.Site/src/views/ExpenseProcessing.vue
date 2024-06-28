@@ -7,7 +7,7 @@ import {
   type Expense,
   type ExpenseReport
 } from '@/api/server'
-import ExpensesTable from '@/components/ExpensesTable.vue'
+import ExpensesTable from '@/components/ExpensesTable'
 import Button from '@/components/ui/button.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'

@@ -45,12 +45,6 @@ export async function updateExpense(expense: Expense): Promise<void> {
   })
 }
 
-export async function getExpenseCategories(): Promise<string[]> {
-  return await fetch('/api/categories')
-    .then((response) => response.json())
-    .then((data) => data.categories)
-}
-
 export async function uploadExpenses(expenses: Expense[]): Promise<void> {
   await fetch('/api/expenses/', {
     method: 'POST',

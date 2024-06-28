@@ -24,7 +24,12 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             insert into Expenses (id, person, date, amount, originalcurrency, city, store, trip, shared, category)
             values (@Id, @Person, @Date, @Amount, @OriginalCurrency, @City, @Store, @Trip, @Shared, @Category)
             """,
-            req.Expenses
+            req.Expenses.Select(t=> t with
+            {
+                Store = t.Store.Trim().ToUpperInvariant(),
+                Category = t.Category?.Trim().ToUpperInvariant()
+            
+            })
         );
 
         await SendAsync(null, 201, ct);

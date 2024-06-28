@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { getExpenseCategories } from '@/api/server'
+import { getCategories } from '@/api/categories'
 import type { Expense } from '@/api/server'
-import CategorySimpleSelect from '@/components/ui/select'
+import AutoComplete from '@/components/ui/autocomplete'
 import Button from '@/components/ui/button.vue'
+import Header from './header.vue'
+import Cell from './cell.vue'
 type Props = { expenses: Expense[] }
 
 defineProps<Props>()
@@ -16,7 +18,7 @@ const emit = defineEmits<{
 
 const pageNumber = ref(0)
 const pageSize = ref(10)
-const categories = ref<string[]>(await getExpenseCategories())
+const categories = ref<string[]>(await getCategories())
 
 async function nextPage() {
   pageNumber.value++
@@ -47,7 +49,7 @@ async function edit(expense: Expense) {
 async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) {
   await edit(expense)
   if (newCategory) {
-    categories.value = await getExpenseCategories()
+    categories.value = await getCategories()
   }
 }
 </script>
@@ -57,40 +59,40 @@ async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) 
     <table class="min-w-full">
       <thead>
         <tr>
-          <th class="py-2 px-4 border-b border-gray-200">Date</th>
-          <th class="py-2 px-4 border-b border-gray-200">Amount</th>
-          <th class="py-2 px-4 border-b border-gray-200">Store</th>
-          <th class="py-2 px-4 border-b border-gray-200">Category</th>
-          <th class="py-2 px-4 border-b border-gray-200">City</th>
-          <th class="py-2 px-4 border-b border-gray-200">Trip</th>
-          <th class="py-2 px-4 border-b border-gray-200">Shared</th>
-          <th class="py-2 px-4 border-b border-gray-200">Person</th>
-          <th class="py-2 px-4 border-b border-gray-200">Actions</th>
+          <Header>Date</Header>
+          <Header>Amount</Header>
+          <Header>Store</Header>
+          <Header>Category</Header>
+          <Header>City</Header>
+          <Header>Trip</Header>
+          <Header>Shared</Header>
+          <Header>Person</Header>
+          <Header>Actions</Header>
         </tr>
       </thead>
       <tbody>
         <tr v-for="expense in expenses" :key="expense.id" class="hover:bg-gray-100">
-          <td class="py-2 px-4 border-b border-gray-200">{{ expense.date }}</td>
-          <td class="py-2 px-4 border-b border-gray-200">{{ expense.amount }} kr</td>
-          <td class="py-2 px-4 border-b border-gray-200">{{ expense.store }}</td>
-          <td class="py-2 px-4 border-b border-gray-200">
-            <CategorySimpleSelect
-              :expense="expense"
-              :categories="categories"
+          <Cell> {{ expense.date }}</Cell>
+          <Cell>{{ expense.amount }} kr</Cell>
+          <Cell> {{ expense.store }}</Cell>
+          <Cell>
+            <AutoComplete
+              v-model="expense.category"
+              :values="categories"
               @change="(newCategory) => updateExpeseWithCategory(expense, newCategory)"
             />
-          </td>
-          <td class="py-2 px-4 border-b border-gray-200">{{ expense.city }}</td>
-          <td class="py-2 px-4 border-b border-gray-200">
+          </Cell>
+          <Cell>{{ expense.city }}</Cell>
+          <Cell>
             <input type="checkbox" v-model="expense.trip" @change="edit(expense)" />
-          </td>
-          <td class="py-2 px-4 border-b border-gray-200">
+          </Cell>
+          <Cell>
             <input type="checkbox" v-model="expense.shared" @change="edit(expense)" />
-          </td>
-          <td class="py-2 px-4 border-b border-gray-200">{{ expense.person }}</td>
-          <td class="py-2 px-4 border-b border-gray-200">
-            <Button type="danger" @click="remove(expense)"> Delete </Button>
-          </td>
+          </Cell>
+          <Cell>{{ expense.person }}</Cell>
+          <Cell>
+            <Button variant="danger" @click="remove(expense)"> Delete </Button>
+          </Cell>
         </tr>
       </tbody>
     </table>
@@ -123,3 +125,4 @@ async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) 
     </div>
   </div>
 </template>
+@/components/ui/autocomplete

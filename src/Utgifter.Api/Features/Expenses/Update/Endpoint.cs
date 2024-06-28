@@ -37,7 +37,11 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
                     category = @Category
                 where id = @Id
                 """,
-                expense with{ Category = expense.Category?.ToUpperInvariant() },
+                expense with
+                {
+                    Store = expense.Store.Trim().ToUpperInvariant(),
+                    Category = expense.Category?.ToUpperInvariant()
+                },
                 transaction
             );
         }

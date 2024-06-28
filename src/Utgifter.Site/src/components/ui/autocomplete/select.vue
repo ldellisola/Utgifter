@@ -1,28 +1,44 @@
 <script setup lang="ts">
-import type { Expense } from '@/api/server'
 import Fuse from 'fuse.js'
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import listItem from './listItem.vue'
 
 interface CategorySelectProps {
-  expense: Expense
-  categories: string[]
+  values: string[]
+  focus?: boolean
 }
 
 const props = defineProps<CategorySelectProps>()
 const emit = defineEmits<{
   change: [newCategory: boolean]
+  blur: []
 }>()
 
+const input = ref<HTMLInputElement | null>(null)
+watch(
+  () => props.focus,
+  (focus) => {
+    if (focus) {
+      nextTick(() => {
+        input.value!.focus()
+        filterCategories(model.value ?? '')
+      })
+    }
+  },
+  { immediate: true }
+)
+
+const model = defineModel<string | undefined>()
+
 const filteredCategories = ref<string[] | undefined>(undefined)
-const fuse = new Fuse(props.categories, {
+const fuse = new Fuse(props.values, {
   isCaseSensitive: false,
   threshold: 0.3,
   ignoreLocation: true
 })
 
 watch(
-  () => props.categories,
+  () => props.values,
   (newCategories) => {
     fuse.setCollection(newCategories)
   }
@@ -30,37 +46,37 @@ watch(
 
 function onBlur() {
   filteredCategories.value = undefined
+  emit('blur')
 }
 
 function filterCategories(input: string) {
   if (input?.length > 0) {
     filteredCategories.value = fuse.search(input).map((t) => t.item)
   } else {
-    filteredCategories.value = props.categories
+    filteredCategories.value = props.values
   }
 }
 
 function selectCategory(category?: string) {
-  console.log('selectCategory', category)
-  props.expense.category = category
-  emit('change', category !== undefined && !props.categories.includes(category))
+  model.value = category
+  emit('change', category !== undefined && !props.values.includes(category))
   onBlur()
 }
 
 function clearInput() {
-  console.log('clearInput')
-  props.expense.category = undefined
+  model.value = undefined
   filterCategories('')
   emit('change', false)
 }
 </script>
 
 <template>
-  <div class="w-max relative">
+  <div class="relative w-max">
     <input
-      class="pl-2 overflow-hidden w-max relative box-border border-2 border-black rounded outline-none"
+      ref="input"
+      class="pl-2 overflow-hidden w-full relative box-border border border-black rounded outline-none"
       type="text"
-      v-model="expense.category"
+      v-model="model"
       @focus="(e: any) => filterCategories(e.target.value)"
       @input="(e: any) => filterCategories(e.target.value)"
       @paste="(e: any) => filterCategories(e.target.value)"
@@ -79,14 +95,10 @@ function clearInput() {
           {{ category }}
         </listItem>
         <listItem
-          v-if="
-            expense.category !== '' &&
-            expense.category !== null &&
-            !filteredCategories.includes(expense.category!)
-          "
-          @mousedown="selectCategory(expense.category)"
+          v-if="model !== '' && model !== null && !filteredCategories.includes(model!)"
+          @mousedown="selectCategory(model)"
         >
-          <i>Add</i> '{{ expense.category }}'
+          <i>Add</i> '{{ model }}'
         </listItem>
         <listItem @mousedown="clearInput()">
           <b>Remove</b>

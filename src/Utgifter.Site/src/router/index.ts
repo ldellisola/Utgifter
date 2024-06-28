@@ -1,5 +1,6 @@
 import ExpenseProcessing from '@/views/ExpenseProcessing.vue'
 import Expenses from '@/views/Expenses.vue'
+import Rules from '@/views/Rules.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -19,6 +20,11 @@ const router = createRouter({
       path: '/expenses/upload',
       name: 'upload',
       component: ExpenseProcessing
+    },
+    {
+      path: '/rules',
+      name: 'rules',
+      component: Rules
     }
   ]
 })
