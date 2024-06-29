@@ -6,6 +6,7 @@ import AutoComplete from '@/components/ui/autocomplete'
 import Button from '@/components/ui/button.vue'
 import Header from './header.vue'
 import Cell from './cell.vue'
+import FocusableInput from '../ui/FocusableInput.vue'
 type Props = { expenses: Expense[] }
 
 defineProps<Props>()
@@ -73,7 +74,14 @@ async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) 
       <tbody>
         <tr v-for="expense in expenses" :key="expense.id" class="hover:bg-gray-100">
           <Cell> {{ expense.date }}</Cell>
-          <Cell>{{ expense.amount }} kr</Cell>
+          <Cell>
+            <FocusableInput
+              v-model="expense.amount"
+              textSuffix="kr"
+              @change="edit(expense)"
+              type="number"
+            />
+          </Cell>
           <Cell> {{ expense.store }}</Cell>
           <Cell>
             <AutoComplete

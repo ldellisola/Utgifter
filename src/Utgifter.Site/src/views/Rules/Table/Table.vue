@@ -4,7 +4,7 @@ import Button from '@/components/ui/button.vue'
 import Header from './Header.vue'
 import Cell from './Cell.vue'
 import type { Rule } from '@/api/rules'
-import FocusableInput from './FocusableInput.vue'
+import FocusableInput from '@/components/ui/FocusableInput.vue'
 import FocusableAutoComplete from './FocusableAutoComplete.vue'
 import { getCategories } from '@/api/categories'
 

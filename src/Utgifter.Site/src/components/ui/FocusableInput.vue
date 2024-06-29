@@ -2,6 +2,13 @@
 import { useParentElement } from '@vueuse/core'
 import { nextTick, ref, onMounted } from 'vue'
 
+type Props = {
+  type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url'
+  textSuffix?: string
+}
+
+defineProps<Props>()
+
 const model = defineModel()
 
 const showInput = ref(false)
@@ -22,10 +29,11 @@ onMounted(() => {
 <template>
   <input
     ref="input"
+    :type="type"
     v-if="showInput"
     v-model="model"
     class="border rounded border-black"
     @blur="showInput = false"
   />
-  <div v-else>{{ model }}</div>
+  <div v-else>{{ model }} {{ textSuffix }}</div>
 </template>
