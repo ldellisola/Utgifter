@@ -22,7 +22,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
         await using var connection = new NpgsqlConnection(_connectionString);
         var expenses = await connection.QueryAsync<Expense>(
             """
-            select id, date, person, store, city, originalCurrency, amount, category, shared, trip 
+            select id, date, person, store, city, originalCurrency, amount,hash, category, shared, trip 
             from Expenses
             ORDER BY Date DESC, id DESC
             LIMIT @PageSize OFFSET @PageSize * @PageNumber

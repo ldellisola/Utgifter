@@ -6,6 +6,7 @@ export type Expense = {
   store: string
   city: string
   originalCurrency: string
+  hash: string
   category?: string
   shared: boolean
   trip: boolean

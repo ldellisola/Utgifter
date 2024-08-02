@@ -1,3 +1,6 @@
+using System.Buffers.Text;
+using System.Security.Cryptography;
+using System.Text;
 using Dapper;
 using FastEndpoints;
 using Microsoft.Extensions.Options;
@@ -45,7 +48,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         {
             // Check if expense already exists
             // if it does, add it to existingExpenses
-            if (await GetExistingExpense(expense.Date, expense.Person, expense.Store, expense.Amount) is { } existingExpense)
+            if (await GetExistingExpense(expense) is { } existingExpense)
             {
                 existingExpenses.Add(existingExpense);
                 continue;
@@ -98,16 +101,16 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         );
     } 
 
-    private async Task<Expense?> GetExistingExpense(DateOnly date, string person, string store, decimal amount)
+    private async Task<Expense?> GetExistingExpense(Expense e)
     {
         await using var connection = new NpgsqlConnection(_connectionString);
         var expense = await connection.QueryFirstOrDefaultAsync<Expense>(
             $"""
-             select id, date, person, store, city, originalcurrency, amount, category, shared, trip 
+             select id, date, person, store, city, originalcurrency, amount,hash, category, shared, trip 
              from Expenses
-             where date = @date and person = @person and store = @store and amount = @amount
+             where expenses.hash = @hash
              """,
-            new {date, person, store, amount}
+            new {hash = e.Hash}
         );
 
         return expense;
@@ -142,11 +145,13 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             var city = worksheet.Cells[expenseIndex, 4].GetValue<string>();
             var originalCurrency = worksheet.Cells[expenseIndex, 5].GetValue<string?>();
             var amount = worksheet.Cells[expenseIndex, 7].GetValue<decimal>();
-            
-            expenses.Add(new(Guid.NewGuid(), date, user, store, city, originalCurrency ?? "NOK", amount,Trip: originalCurrency is not null));
+
+            expenses.Add(Expense.New(date, user, store, city, originalCurrency ?? "NOK", amount,trip: originalCurrency is not null));
             
             expenseIndex += originalCurrency is not null ? 2 : 1;
         }
         return expenses.ToArray();
     } 
+    
+
 }

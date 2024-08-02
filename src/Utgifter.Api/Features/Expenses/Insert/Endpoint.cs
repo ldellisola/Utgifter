@@ -21,8 +21,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
         await using var connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync(
             """
-            insert into Expenses (id, person, date, amount, originalcurrency, city, store, trip, shared, category)
-            values (@Id, @Person, @Date, @Amount, @OriginalCurrency, @City, @Store, @Trip, @Shared, @Category)
+            insert into Expenses (id, person, date, amount, originalcurrency, city, store, trip, shared, category, hash)
+            values (@Id, @Person, @Date, @Amount, @OriginalCurrency, @City, @Store, @Trip, @Shared, @Category, @hash)
             """,
             req.Expenses.Select(t=> t with
             {
