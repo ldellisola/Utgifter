@@ -40,7 +40,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
                 expense with
                 {
                     Store = expense.Store.Trim().ToUpperInvariant(),
-                    Category = expense.Category?.ToUpperInvariant()
+                    Category = expense.Category?.ToUpperInvariant(),
+                    Trip = expense.Trip?.Trim().ToUpperInvariant()
                 },
                 transaction
             );

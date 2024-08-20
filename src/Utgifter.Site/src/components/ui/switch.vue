@@ -3,7 +3,6 @@ defineProps<{ label: string }>()
 const model = defineModel<boolean>()
 
 function toggle() {
-  console.log('toggle')
   model.value = !model.value
 }
 </script>

@@ -1,6 +1,3 @@
-using System.Buffers.Text;
-using System.Security.Cryptography;
-using System.Text;
 using Dapper;
 using FastEndpoints;
 using Microsoft.Extensions.Options;
@@ -62,7 +59,12 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
                 Category = rule?.NewCategory ?? category,
                 Store = rule?.NewStore ?? expense.Store,
                 Shared = rule?.Shared ?? expense.Shared,
-                Trip = rule?.Trip ?? expense.Trip
+                Trip = rule?.Trip switch
+                {
+                    false => null,
+                    true => "unknown",
+                    null => null,
+                }
             });
         }
         
@@ -146,7 +148,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             var originalCurrency = worksheet.Cells[expenseIndex, 5].GetValue<string?>();
             var amount = worksheet.Cells[expenseIndex, 7].GetValue<decimal>();
 
-            expenses.Add(Expense.New(date, user, store, city, originalCurrency ?? "NOK", amount,trip: originalCurrency is not null));
+            expenses.Add(Expense.New(date, user, store, city, originalCurrency ?? "NOK", amount,trip: originalCurrency is null ? null : "unknown"));
             
             expenseIndex += originalCurrency is not null ? 2 : 1;
         }

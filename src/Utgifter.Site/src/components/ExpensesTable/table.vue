@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { getCategories } from '@/api/categories'
+import { getTrips } from '@/api/trips'
 import type { Expense } from '@/api/server'
 import AutoComplete from '@/components/ui/autocomplete'
 import Button from '@/components/ui/button.vue'
@@ -19,7 +20,6 @@ const emit = defineEmits<{
 
 const pageNumber = ref(0)
 const pageSize = ref(10)
-const categories = ref<string[]>(await getCategories())
 
 async function nextPage() {
   pageNumber.value++
@@ -47,10 +47,25 @@ async function edit(expense: Expense) {
   emit('editExpense', expense, pageNumber.value, pageSize.value)
 }
 
+const categories = ref<string[]>(await getCategories())
 async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) {
   await edit(expense)
   if (newCategory) {
-    categories.value = await getCategories()
+    setTimeout(async () => {
+      categories.value = await getCategories()
+    }, 1000)
+    // categories.value = await getCategories()
+  }
+}
+
+const trips = ref<string[]>(await getTrips())
+async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
+  await edit(expense)
+  if (newTrip) {
+    setTimeout(async () => {
+      trips.value = await getTrips()
+    }, 1000)
+    // trips.value = await getTrips()
   }
 }
 </script>
@@ -92,7 +107,11 @@ async function updateExpeseWithCategory(expense: Expense, newCategory: boolean) 
           </Cell>
           <Cell>{{ expense.city }}</Cell>
           <Cell>
-            <input type="checkbox" v-model="expense.trip" @change="edit(expense)" />
+            <AutoComplete
+              v-model="expense.trip"
+              :values="trips"
+              @change="(newTrip) => updateExpeseWithTrip(expense, newTrip)"
+            />
           </Cell>
           <Cell>
             <input type="checkbox" v-model="expense.shared" @change="edit(expense)" />

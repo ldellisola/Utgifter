@@ -41,6 +41,7 @@ watch(
   () => props.values,
   (newCategories) => {
     fuse.setCollection(newCategories)
+    filteredCategories.value = undefined
   }
 )
 

@@ -9,7 +9,7 @@ export type Expense = {
   hash: string
   category?: string
   shared: boolean
-  trip: boolean
+  trip?: string
 }
 
 export async function getExpenses(pageNumber?: number, pageSize?: number): Promise<Expense[]> {

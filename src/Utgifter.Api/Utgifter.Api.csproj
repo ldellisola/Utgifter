@@ -29,6 +29,9 @@
       <None Update="DataBase\Migrations\03-AddHashField.sql">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="DataBase\Migrations\04-TripIsString.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

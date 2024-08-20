@@ -14,7 +14,7 @@ public record Expense(
     string Hash,
     string? Category = null,
     bool Shared = true,
-    bool Trip = false
+    string? Trip = null
 )
 {
 
@@ -27,7 +27,7 @@ public record Expense(
         decimal amount,
         string? category = null,
         bool shared = true,
-        bool trip = false
+        string? trip = null
     )
         => new (Guid.NewGuid(), date, person, store, city, originalCurrency, amount,
             CalculateHash(date, person, store, amount), category, shared, trip);
