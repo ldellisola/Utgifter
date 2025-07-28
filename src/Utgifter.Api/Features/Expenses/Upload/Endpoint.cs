@@ -39,7 +39,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         var expenses = await ParseExpensesAsync(req.ExpenseFile);
         
         var existingExpenses = new List<Expense>();
-        var newExpenses = new List<Expense>();
+        var newExpenses =  new List<Expense>();
         
         foreach (var expense in expenses)
         {
@@ -130,9 +130,12 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
 
     private static async Task<Expense[]> ParseExpensesAsync(IFormFile file)
     {
-        await using var stream = file.ContentType == Xls ?
-            ConvertToXlsx(file)
-            : file.OpenReadStream();
+        await using var stream = file.ContentType switch
+        {
+            Xls => ConvertToXlsx(file),
+            Xlsx => file.OpenReadStream(),
+            _ => throw new NotSupportedException("Unsupported file type")
+        };
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.First();
 
@@ -143,7 +146,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         while(worksheet.Cells[expenseIndex, 2].Value is not null) 
         {
             var date = DateOnly.FromDateTime(worksheet.Cells[expenseIndex, 1].GetValue<DateTime>());
-            var store = worksheet.Cells[expenseIndex, 3].GetValue<string>();
+            var store = worksheet.Cells[expenseIndex, 3].GetValue<string>()
+                .TrimStart(StringComparison.OrdinalIgnoreCase,"VIPPS*","ZETTLE_*","SUMUP  *","NYX*","MS*").Trim();
             var city = worksheet.Cells[expenseIndex, 4].GetValue<string>();
             var originalCurrency = worksheet.Cells[expenseIndex, 5].GetValue<string?>();
             var amount = worksheet.Cells[expenseIndex, 7].GetValue<decimal>();
