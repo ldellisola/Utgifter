@@ -68,7 +68,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             });
         }
         
-        await SendOkAsync(new(existingExpenses, newExpenses), ct);
+        await Send.OkAsync(new(existingExpenses, newExpenses), ct);
     }
     
 
@@ -147,7 +147,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         {
             var date = DateOnly.FromDateTime(worksheet.Cells[expenseIndex, 1].GetValue<DateTime>());
             var store = worksheet.Cells[expenseIndex, 3].GetValue<string>()
-                .TrimStart(StringComparison.OrdinalIgnoreCase,"VIPPS*","ZETTLE_*","SUMUP  *","NYX*","MS*").Trim();
+                .TrimStart(StringComparison.OrdinalIgnoreCase,"VIPPS*","ZETTLE_*","SUMUP  *","NYX*","MS*","KLARNA*").Trim();
             var city = worksheet.Cells[expenseIndex, 4].GetValue<string>();
             var originalCurrency = worksheet.Cells[expenseIndex, 5].GetValue<string?>();
             var amount = worksheet.Cells[expenseIndex, 7].GetValue<decimal>();

@@ -29,6 +29,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             """,
             new { req.PageSize, req.PageNumber }
         );
-        await SendOkAsync(new Response(expenses.ToArray()), ct);
+        await Send.OkAsync(new Response(expenses.ToArray()), ct);
     }
 }

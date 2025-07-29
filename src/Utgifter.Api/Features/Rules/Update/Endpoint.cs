@@ -22,7 +22,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
         var (id, expectedStore, newStore, newCategory,shared, trip) = request;
         var rule = new Rule(id, expectedStore, newStore, newCategory, shared, trip);
         await UpdateRule(rule);
-        await SendNoContentAsync(cancellationToken);
+        await Send.NoContentAsync(cancellationToken);
     }
 
 

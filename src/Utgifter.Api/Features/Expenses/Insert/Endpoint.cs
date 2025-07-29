@@ -32,6 +32,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             })
         );
 
-        await SendAsync(null, 201, ct);
+        await Send.NoContentAsync(ct);
     }
 }

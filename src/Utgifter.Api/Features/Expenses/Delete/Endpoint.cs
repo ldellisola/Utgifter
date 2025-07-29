@@ -22,6 +22,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             "delete from Expenses where id = @Id",
             new {req.Id}
         );
-        await SendOkAsync(ct);
+        await Send.NoContentAsync(ct);
     }
 }

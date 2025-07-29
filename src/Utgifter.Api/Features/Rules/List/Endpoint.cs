@@ -20,7 +20,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
     public override  async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
         var rules = await GetPaginatedRules(request.PageNumber, request.PageSize);
-        await SendOkAsync(new Response(rules.ToArray()), cancellationToken);
+        await Send.OkAsync(new Response(rules.ToArray()), cancellationToken);
     }
     
     private async Task<IEnumerable<Rule>> GetPaginatedRules(int pageNumber, int pageSize)

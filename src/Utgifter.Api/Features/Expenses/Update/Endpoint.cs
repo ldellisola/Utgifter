@@ -47,6 +47,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             );
         }
         await transaction.CommitAsync(ct);
-        await SendOkAsync(ct);
+        await Send.OkAsync(ct, ct);
     }
 }

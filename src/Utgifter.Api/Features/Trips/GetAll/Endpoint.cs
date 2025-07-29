@@ -22,7 +22,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : EndpointWith
             "select distinct trip from expenses where trip is not null order by trip"
         );
         
-        await SendOkAsync(new Response(trips.ToArray()), ct);
-        
+        await Send.OkAsync(new Response(trips.ToArray()), ct);
     }
 }

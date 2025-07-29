@@ -19,11 +19,11 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
     {
         if (!DeleteRule(request.Id))
         {
-            await SendNotFoundAsync(cancellationToken);
+            await Send.NotFoundAsync(cancellationToken);
             return;
         }
 
-        await SendNoContentAsync(cancellationToken);
+        await Send.NoContentAsync(cancellationToken);
     }
     
     

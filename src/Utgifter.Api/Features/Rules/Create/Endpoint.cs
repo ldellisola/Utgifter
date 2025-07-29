@@ -23,7 +23,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
         
         var rule = new Rule(Guid.NewGuid(),expectedStore,newStore, newCategory, shared, trip);
         rule = await InsertRule(rule);
-        await SendAsync(rule, 201, cancellationToken);
+        await Send.ResponseAsync(rule, 201, cancellationToken);
     }
     
     

@@ -9,7 +9,7 @@ using Utgifter.Api.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 SqlMapper.AddTypeHandler(new SqlDateOnlyMapper());
-ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+ExcelPackage.License.SetNonCommercialPersonal("lucas");
 
 builder.Services.ConfigureOptions<DataBaseOptionsSetup>();
 

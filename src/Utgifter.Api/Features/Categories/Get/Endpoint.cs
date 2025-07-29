@@ -22,6 +22,6 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : EndpointWith
             "select distinct category from expenses where category is not null order by category"
         );
         
-        await SendOkAsync(new Response(categories.ToArray()), ct);
+        await Send.OkAsync(new Response(categories.ToArray()), ct);
     }
 }

@@ -30,21 +30,21 @@ public static class ExcelExtensions
 
             ConvertSheet(sSheet, dSheet);
 
-            SheetState state = SheetState.Visible;
-
-            try
-            {
-                if (source.IsSheetHidden(i))
-                    state = SheetState.Hidden;
-                if (source.IsSheetVeryHidden(i))
-                    state = SheetState.VeryHidden;
-
-                destination.SetSheetHidden(i, state);
-            }
-            catch
-            {
-                // ignored
-            }
+            // SheetState state = SheetState.Visible;
+            //
+            // try
+            // {
+            //     if (source.IsSheetHidden(i))
+            //         state = SheetState.Hidden;
+            //     if (source.IsSheetVeryHidden(i))
+            //         state = SheetState.VeryHidden;
+            //
+            //     destination.SetSheetHidden(i, state);
+            // }
+            // catch
+            // {
+            //     // ignored
+            // }
         }
 
         try { destination.SetActiveSheet(source.ActiveSheetIndex); }
