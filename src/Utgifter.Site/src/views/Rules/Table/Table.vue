@@ -6,6 +6,7 @@ import Cell from './Cell.vue'
 import type { Rule } from '@/api/rules'
 import FocusableInput from '@/components/ui/FocusableInput.vue'
 import FocusableAutoComplete from './FocusableAutoComplete.vue'
+import Select from '@/components/ui/select.vue'
 import { getCategories } from '@/api/categories'
 
 type Props = { rules: Rule[] }
@@ -77,26 +78,26 @@ categories.value = await getCategories()
             />
           </Cell>
           <Cell>
-            <select
+            <Select
+              :options="[
+                { value: null, label: '' },
+                { value: true, label: 'True' },
+                { value: false, label: 'False' }
+              ]"
               v-model="rule.trip"
               @change="edit(rule)"
-              class="border border-black rounded bg-white px-2"
-            >
-              <option :value="undefined" selected></option>
-              <option :value="true">True</option>
-              <option :value="false">False</option>
-            </select>
+            />
           </Cell>
           <Cell>
-            <select
+            <Select
+              :options="[
+                { value: null, label: '' },
+                { value: true, label: 'True' },
+                { value: false, label: 'False' }
+              ]"
               v-model="rule.shared"
               @change="edit(rule)"
-              class="border border-black rounded bg-white px-2"
-            >
-              <option :value="undefined" selected></option>
-              <option :value="true">True</option>
-              <option :value="false">False</option>
-            </select>
+            />
           </Cell>
           <Cell>
             <Button variant="danger" @click="remove(rule)"> Delete </Button>

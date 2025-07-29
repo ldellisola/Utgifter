@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Button from '@/components/ui/button.vue'
 import AutoComplete from '@/components/ui/autocomplete'
+import Select from '@/components/ui/select.vue'
 import { createRule } from '@/api/rules'
 import { getCategories } from '@/api/categories'
 
@@ -22,14 +23,14 @@ type Form = {
 const form = ref<Form>({
   expectedStore: '',
   newCategory: '',
-  trip: undefined,
+  trip: null,
   newStore: '',
-  shared: undefined
+  shared: null
 })
 
 function prepareString(text: string) {
   const trim = text.trim()
-  if (trim.length === 0) return undefined
+  if (trim.length === 0) return null
   return trim
 }
 
@@ -57,9 +58,9 @@ async function submitForm() {
     form.value = {
       expectedStore: '',
       newCategory: '',
-      trip: undefined,
+      trip: null,
       newStore: '',
-      shared: undefined
+      shared: null
     }
   }
 }
@@ -76,11 +77,11 @@ const categories = await getCategories()
       New Rule
     </div>
     <div class="flex flex-col p-2" :class="{ hidden: isClosed }">
-      <div class="flex flex-row gap-1">
+      <div class="flex flex-row gap-1 items-center">
         <label for="expecteStore"> When the <b>store</b> is:</label>
         <input
           v-model="form.expectedStore"
-          class="flex-grow border rounded border-black"
+          class="block flex-grow rounded-md border-0 bg-white pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm h-8"
           id="expecteStore"
         />
         <span class="text-red-500" v-if="expectedStoreError">{{ expectedStoreError }}</span>
@@ -90,7 +91,7 @@ const categories = await getCategories()
         <span class="text-red-500" v-if="transformError">{{ transformError }}</span>
       </div>
       <div class="flex flex-wrap m-2">
-        <div class="w-1/2 h-1/2 flex gap-2 px-2 my-2">
+        <div class="w-1/2 flex gap-2 px-2 my-2 items-center">
           <label for="newCategory"> Category: </label>
           <AutoComplete
             :values="categories"
@@ -100,39 +101,41 @@ const categories = await getCategories()
           />
         </div>
 
-        <div class="w-1/2 h-1/2 flex gap-2 px-2 my-2">
+        <div class="w-1/2 flex gap-2 px-2 my-2 items-center">
           <label for="isTrip"> Trip: </label>
-          <select
+          <Select
+            :options="[
+              { value: null, label: '' },
+              { value: true, label: 'True' },
+              { value: false, label: 'False' }
+            ]"
             v-model="form.trip"
-            class="border border-black rounded bg-white flex-grow px-2"
+            class="flex-grow"
             id="isTrip"
-          >
-            <option :value="undefined" selected></option>
-            <option :value="true">True</option>
-            <option :value="false">False</option>
-          </select>
+          />
         </div>
 
-        <div class="w-1/2 h-1/2 flex gap-2 px-2 my-2">
+        <div class="w-1/2 flex gap-2 px-2 my-2 items-center">
           <label for="newStore"> Store: </label>
           <input
             v-model="form.newStore"
-            class="border border-black flex-grow rounded"
+            class="block w-full rounded-md border-0 bg-white pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm h-8"
             id="newStore"
           />
         </div>
 
-        <div class="w-1/2 h-1/2 flex gap-2 px-2 my-2">
+        <div class="w-1/2 flex gap-2 px-2 my-2 items-center">
           <label for="isShared"> Shared: </label>
-          <select
+          <Select
+            :options="[
+              { value: null, label: '' },
+              { value: true, label: 'True' },
+              { value: false, label: 'False' }
+            ]"
             v-model="form.shared"
-            class="border border-black rounded bg-white flex-grow px-2"
+            class="flex-grow"
             id="isShared"
-          >
-            <option :value="undefined" selected></option>
-            <option :value="true">True</option>
-            <option :value="false">False</option>
-          </select>
+          />
         </div>
       </div>
       <Button @click="submitForm" variant="primary">Add Rule</Button>

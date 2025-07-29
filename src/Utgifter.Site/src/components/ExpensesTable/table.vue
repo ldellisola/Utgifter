@@ -4,6 +4,7 @@ import { getCategories } from '@/api/categories'
 import { getTrips } from '@/api/trips'
 import type { Expense } from '@/api/server'
 import AutoComplete from '@/components/ui/autocomplete'
+import Switch from '@/components/ui/switch.vue'
 import Button from '@/components/ui/button.vue'
 import Header from './header.vue'
 import Cell from './cell.vue'
@@ -114,7 +115,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
             />
           </Cell>
           <Cell>
-            <input type="checkbox" v-model="expense.shared" @change="edit(expense)" />
+            <Switch v-model="expense.shared" @update:model-value="edit(expense)" />
           </Cell>
           <Cell>{{ expense.person }}</Cell>
           <Cell>

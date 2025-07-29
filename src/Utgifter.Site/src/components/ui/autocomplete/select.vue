@@ -75,7 +75,7 @@ function clearInput() {
   <div class="relative w-max">
     <input
       ref="input"
-      class="pl-2 overflow-hidden w-full relative box-border border border-black rounded outline-none"
+      class="block w-full rounded-md border-0 bg-white pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm h-8"
       type="text"
       v-model="model"
       @focus="(e: any) => filterCategories(e.target.value)"
