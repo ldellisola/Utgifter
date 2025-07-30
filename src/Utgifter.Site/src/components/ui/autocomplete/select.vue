@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Fuse from 'fuse.js'
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, ref, watch, onMounted, onUnmounted } from 'vue'
 import listItem from './listItem.vue'
 
 interface CategorySelectProps {
@@ -15,6 +15,20 @@ const emit = defineEmits<{
 }>()
 
 const input = ref<HTMLInputElement | null>(null)
+const dropdownStyle = ref({})
+
+function updateDropdownPosition() {
+  if (input.value) {
+    const rect = input.value.getBoundingClientRect()
+    dropdownStyle.value = {
+      position: 'absolute',
+      top: `${rect.bottom + window.scrollY}px`,
+      left: `${rect.left + window.scrollX}px`,
+      width: `${rect.width}px`
+    }
+  }
+}
+
 watch(
   () => props.focus,
   (focus) => {
@@ -22,6 +36,7 @@ watch(
       nextTick(() => {
         input.value!.focus()
         filterCategories(model.value ?? '')
+        updateDropdownPosition()
       })
     }
   },
@@ -46,8 +61,15 @@ watch(
 )
 
 function onBlur() {
-  filteredCategories.value = undefined
-  emit('blur')
+  setTimeout(() => {
+    filteredCategories.value = undefined
+    emit('blur')
+  }, 150)
+}
+
+function onFocus() {
+  filterCategories(model.value ?? '')
+  updateDropdownPosition()
 }
 
 function filterCategories(input: string) {
@@ -61,7 +83,6 @@ function filterCategories(input: string) {
 function selectCategory(category?: string) {
   model.value = category
   emit('change', category !== undefined && !props.values.includes(category))
-  onBlur()
 }
 
 function clearInput() {
@@ -69,6 +90,16 @@ function clearInput() {
   filterCategories('')
   emit('change', false)
 }
+
+onMounted(() => {
+  window.addEventListener('resize', updateDropdownPosition)
+  window.addEventListener('scroll', updateDropdownPosition, true)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateDropdownPosition)
+  window.removeEventListener('scroll', updateDropdownPosition, true)
+})
 </script>
 
 <template>
@@ -78,33 +109,36 @@ function clearInput() {
       class="block w-full rounded-md border-0 bg-white pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm h-8"
       type="text"
       v-model="model"
-      @focus="(e: any) => filterCategories(e.target.value)"
+      @focus="onFocus"
       @input="(e: any) => filterCategories(e.target.value)"
       @paste="(e: any) => filterCategories(e.target.value)"
       @blur="onBlur"
     />
-    <div
-      class="absolute z-50 top-full left-0 rounded right-0 border border-black bg-white mt-1"
-      v-if="filteredCategories !== undefined"
-    >
-      <ul class="overflow-auto list-none">
-        <listItem
-          v-for="category in filteredCategories"
-          :key="category"
-          @mousedown="selectCategory(category)"
-        >
-          {{ category }}
-        </listItem>
-        <listItem
-          v-if="model !== '' && model !== null && !filteredCategories.includes(model!)"
-          @mousedown="selectCategory(model)"
-        >
-          <i>Add</i> '{{ model }}'
-        </listItem>
-        <listItem @mousedown="clearInput()">
-          <b>Remove</b>
-        </listItem>
-      </ul>
-    </div>
+    <Teleport to="body">
+      <div
+        :style="dropdownStyle"
+        class="absolute z-50 rounded border border-black bg-white mt-1"
+        v-if="filteredCategories !== undefined"
+      >
+        <ul class="overflow-auto list-none max-h-60">
+          <listItem
+            v-for="category in filteredCategories"
+            :key="category"
+            @mousedown="selectCategory(category)"
+          >
+            {{ category }}
+          </listItem>
+          <listItem
+            v-if="model !== '' && model !== null && !filteredCategories.includes(model!)"
+            @mousedown="selectCategory(model)"
+          >
+            <i>Add</i> '{{ model }}'
+          </listItem>
+          <listItem @mousedown="clearInput()">
+            <b>Remove</b>
+          </listItem>
+        </ul>
+      </div>
+    </Teleport>
   </div>
 </template>
