@@ -73,6 +73,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
 
 <template>
   <div class="min-w-full mx-auto bg-white border border-black rounded-xl p-2 shadow-xl">
+    <div class="overflow-x-auto">
     <table class="min-w-full table-fixed">
       <thead>
         <tr>
@@ -104,6 +105,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
               v-model="expense.category"
               :values="categories"
               @change="(newCategory) => updateExpeseWithCategory(expense, newCategory)"
+              class="w-32"
             />
           </Cell>
           <Cell>{{ expense.city }}</Cell>
@@ -112,6 +114,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
               v-model="expense.trip"
               :values="trips"
               @change="(newTrip) => updateExpeseWithTrip(expense, newTrip)"
+              class="w-32"
             />
           </Cell>
           <Cell>
@@ -124,6 +127,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
         </tr>
       </tbody>
     </table>
+    </div>
     <div class="flex justify-between items-center mt-4">
       <div>
         <label for="perPage" class="mr-2">Items per page:</label>
