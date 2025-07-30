@@ -54,24 +54,24 @@ categories.value = await getCategories()
 
 <template>
   <div class="min-w-full mx-auto bg-white border border-black rounded-xl p-2 shadow-xl">
-    <table class="min-w-full">
+    <table class="min-w-full table-fixed">
       <thead>
         <tr>
-          <Header> Expected Store </Header>
-          <Header>New Store</Header>
-          <Header>New Category</Header>
-          <Header>Is Trip</Header>
-          <Header>Is Shared</Header>
-          <Header>Actions</Header>
+          <Header class="w-1/5"> Expected Store </Header>
+          <Header class="w-1/5">New Store</Header>
+          <Header class="w-1/5">New Category</Header>
+          <Header class="w-1/10">Is Trip</Header>
+          <Header class="w-1/10">Is Shared</Header>
+          <Header class="w-1/5">Actions</Header>
         </tr>
       </thead>
       <tbody>
         <tr v-for="rule in rules" :key="rule.id" class="hover:bg-gray-100">
-          <Cell> {{ rule.expectedStore }}</Cell>
-          <Cell> <FocusableInput v-model="rule.newStore" @change="edit(rule)" /> </Cell>
+          <Cell class="px-4"> {{ rule.expectedStore }}</Cell>
+          <Cell> <FocusableInput v-model="rule.newStore" @change="edit(rule)" class="px-4" /> </Cell>
           <Cell>
             <FocusableAutoComplete
-              class="inline-flex"
+              class="inline-flex px-4"
               :values="categories"
               v-model="rule.newCategory"
               @change="edit(rule)"
@@ -86,6 +86,7 @@ categories.value = await getCategories()
               ]"
               v-model="rule.trip"
               @change="edit(rule)"
+              class="px-4"
             />
           </Cell>
           <Cell>
@@ -97,6 +98,7 @@ categories.value = await getCategories()
               ]"
               v-model="rule.shared"
               @change="edit(rule)"
+              class="px-4"
             />
           </Cell>
           <Cell>

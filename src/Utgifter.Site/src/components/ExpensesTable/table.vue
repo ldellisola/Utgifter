@@ -73,7 +73,7 @@ async function updateExpeseWithTrip(expense: Expense, newTrip: boolean) {
 
 <template>
   <div class="min-w-full mx-auto bg-white border border-black rounded-xl p-2 shadow-xl">
-    <table class="min-w-full">
+    <table class="min-w-full table-fixed">
       <thead>
         <tr>
           <Header>Date</Header>
