@@ -1,9 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build-backend
 WORKDIR /src
-COPY ./src/Utgifter.sln .
+COPY ./src/Utgifter.slnx .
 COPY ./src/Utgifter.Api ./Utgifter.Api
+COPY ./src/Utgifter.Tests ./Utgifter.Tests
 
-RUN dotnet restore Utgifter.sln
+RUN dotnet restore Utgifter.slnx
 RUN dotnet build -c Release --no-restore
 RUN dotnet publish ./Utgifter.Api/Utgifter.Api.csproj -c Release -o /app --no-restore --no-build
 
