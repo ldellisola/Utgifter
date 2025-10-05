@@ -31,8 +31,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         if (Files.Count > 1)
             AddError("Only one file can be uploaded at a time");
         
-        if (req.ExpenseFile.ContentType != Xlsx && req.ExpenseFile.ContentType != Xls)
-            AddError("Only Excel files are supported");
+        if (req.ExpenseFile.ContentType != Xlsx)
+            AddError("Only XLSX files are supported");
         
         ThrowIfAnyErrors();
         
@@ -62,7 +62,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
                 Trip = rule?.Trip switch
                 {
                     false => null,
-                    true => "unknown",
+                    true => "UNKNOWN",
                     null => null,
                 }
             });
@@ -128,36 +128,17 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         return xlsx;
     }
 
+
     private static async Task<Expense[]> ParseExpensesAsync(IFormFile file)
     {
         await using var stream = file.ContentType switch
         {
-            Xls => ConvertToXlsx(file),
             Xlsx => file.OpenReadStream(),
             _ => throw new NotSupportedException("Unsupported file type")
         };
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.First();
 
-        var user = worksheet.Cells["C4"].GetValue<string>();
-
-        var expenseIndex = 7;
-        var expenses = new List<Expense>();
-        while(worksheet.Cells[expenseIndex, 2].Value is not null) 
-        {
-            var date = DateOnly.FromDateTime(worksheet.Cells[expenseIndex, 1].GetValue<DateTime>());
-            var store = worksheet.Cells[expenseIndex, 3].GetValue<string>()
-                .TrimStart(StringComparison.OrdinalIgnoreCase,"VIPPS*","ZETTLE_*","SUMUP  *","NYX*","MS*","KLARNA*").Trim();
-            var city = worksheet.Cells[expenseIndex, 4].GetValue<string>();
-            var originalCurrency = worksheet.Cells[expenseIndex, 5].GetValue<string?>();
-            var amount = worksheet.Cells[expenseIndex, 7].GetValue<decimal>();
-
-            expenses.Add(Expense.New(date, user, store, city, originalCurrency ?? "NOK", amount,trip: originalCurrency is null ? null : "unknown"));
-            
-            expenseIndex += originalCurrency is not null ? 2 : 1;
-        }
-        return expenses.ToArray();
-    } 
-    
-
+        return new ExcelParser(worksheet).Parse();
+    }
 }
