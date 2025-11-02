@@ -72,7 +72,7 @@ public partial class TransactionListParser(ExcelWorksheet sheet)
             .Trim();
         var city = sheet.Cells[_row, 4].GetValue<string>();
         var currency = sheet.Cells[_row, 5].GetValue<string>();
-        var amount = sheet.Cells[_row, 6].GetValue<decimal>();
+        var amount = sheet.Cells[_row, 7].GetValue<decimal>();
         var isOriginalCurrency = currency.Equals("nok", StringComparison.OrdinalIgnoreCase);
 
         _expenses.Add(Expense.New(date, _user ?? throw new ArgumentException("No user in file"),store, city, currency, amount, trip: isOriginalCurrency ? null : "UNKNOWN"));
