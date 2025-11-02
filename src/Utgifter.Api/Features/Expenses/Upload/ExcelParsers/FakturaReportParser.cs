@@ -3,9 +3,9 @@ using OfficeOpenXml;
 using Utgifter.Api.Models;
 using Utgifter.Api.Extensions;
 
-namespace Utgifter.Api.Features.Expenses.Upload;
+namespace Utgifter.Api.Features.Expenses.Upload.ExcelParsers;
 
-public partial class ExcelParser(ExcelWorksheet sheet)
+public partial class FakturaReportParser(ExcelWorksheet sheet)
 {
     private int _row = 1;
     private State _state = State.WaitingForUser;
@@ -58,7 +58,7 @@ public partial class ExcelParser(ExcelWorksheet sheet)
             return;
         }
         
-        var dateString = sheet.Cells[_row, 2].GetValue<string>();
+        var dateString = sheet.Cells[_row, 1].GetValue<string>();
 
         if (!DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date)
             && !DateOnly.TryParseExact(dateString, "d.M.yyyy", out date))

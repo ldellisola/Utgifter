@@ -6,6 +6,7 @@ using NPOI.HSSF.UserModel;
 using OfficeOpenXml;
 using Utgifter.Api.Configuration;
 using Utgifter.Api.Extensions;
+using Utgifter.Api.Features.Expenses.Upload.ExcelParsers;
 using Utgifter.Api.Models;
 
 namespace Utgifter.Api.Features.Expenses.Upload;
@@ -139,6 +140,10 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.First();
 
-        return new ExcelParser(worksheet).Parse();
+        return worksheet.Cells[1, 1].GetValue<string>().ToLowerInvariant() switch
+        {
+            "fakturadetaljer" => new FakturaReportParser(worksheet).Parse(),
+            "transaksjonseksport" => new TransactionListParser(worksheet).Parse()
+        };
     }
 }
