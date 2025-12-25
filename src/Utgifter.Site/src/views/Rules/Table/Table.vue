@@ -17,6 +17,7 @@ const emit = defineEmits<{
   load: [page: number, size: number]
   remove: [rule: Rule, page: number, size: number]
   edit: [rule: Rule, page: number, size: number]
+  rename: [rule: Rule]
 }>()
 
 const pageNumber = ref(0)
@@ -101,8 +102,9 @@ categories.value = await getCategories()
               class="px-4"
             />
           </Cell>
-          <Cell>
-            <Button variant="danger" @click="remove(rule)"> Delete </Button>
+          <Cell class="flex gap-2">
+            <Button variant="primary" @click="emit('rename', rule)">Rename Stores</Button>
+            <Button variant="danger" @click="remove(rule)">Delete</Button>
           </Cell>
         </tr>
       </tbody>

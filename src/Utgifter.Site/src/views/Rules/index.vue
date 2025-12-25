@@ -2,10 +2,13 @@
 import Button from '@/components/ui/button.vue'
 import NewRule from './NewRule.vue'
 import RulesTable from './Table'
+import RenameStoresModal from './RenameStoresModal.vue'
 import { getRules, updateRule, deleteRule, type Rule } from '@/api/rules'
 import { ref } from 'vue'
 
 const rules = ref<Rule[]>([])
+const renameRule = ref<Rule | null>(null)
+
 async function loadRules(page?: number, size?: number) {
   rules.value = await getRules(page, size)
 }
@@ -17,6 +20,12 @@ async function edit(rule: Rule, page: number, size: number) {
   await updateRule(rule)
   await loadRules(page, size)
 }
+function openRenameModal(rule: Rule) {
+  renameRule.value = rule
+}
+function closeRenameModal() {
+  renameRule.value = null
+}
 </script>
 
 <template>
@@ -27,6 +36,13 @@ async function edit(rule: Rule, page: number, size: number) {
       </Button>
     </div>
     <NewRule @created="loadRules" />
-    <RulesTable :rules="rules" @load="loadRules" @remove="remove" @edit="edit" />
+    <RulesTable
+      :rules="rules"
+      @load="loadRules"
+      @remove="remove"
+      @edit="edit"
+      @rename="openRenameModal"
+    />
+    <RenameStoresModal :rule="renameRule" @close="closeRenameModal" @applied="loadRules" />
   </div>
 </template>

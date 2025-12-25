@@ -1,4 +1,6 @@
 import type { Error } from './error'
+import type { Expense } from './server'
+
 export type Rule = {
   id?: string
   expectedStore: string
@@ -39,4 +41,20 @@ export async function updateRule(rule: Rule): Promise<void> {
     },
     body: JSON.stringify(rule)
   })
+}
+
+export type RenamePreview = {
+  expenses: Expense[]
+  expectedStore: string
+  newStore?: string
+}
+
+export async function getRenamePreview(ruleId: string): Promise<RenamePreview> {
+  const response = await fetch(`/api/rules/${ruleId}/rename-preview`)
+  return response.json()
+}
+
+export async function applyRename(ruleId: string): Promise<{ affectedRows: number }> {
+  const response = await fetch(`/api/rules/${ruleId}/rename-apply`, { method: 'POST' })
+  return response.json()
 }
