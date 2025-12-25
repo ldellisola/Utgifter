@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build-backend
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build-backend
 WORKDIR /src
 COPY ./src/Utgifter.slnx .
 COPY ./src/Utgifter.Api ./Utgifter.Api
@@ -15,7 +15,7 @@ COPY ./src/Utgifter.Site/ .
 RUN bun install
 RUN bunx --bun vite build
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 ENV ASPNETCORE_URLS=http://+:80
 ENV ASPNETCORE_ENVIRONMENT=Production
 WORKDIR /app
