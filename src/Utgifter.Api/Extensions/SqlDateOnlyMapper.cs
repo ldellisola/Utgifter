@@ -5,7 +5,12 @@ namespace Utgifter.Api.Extensions;
 
 public class SqlDateOnlyMapper: SqlMapper.TypeHandler<DateOnly> // Dapper handler for DateOnly
 {
-    public override DateOnly Parse(object value) => DateOnly.FromDateTime((DateTime)value);
+    public override DateOnly Parse(object value) => value switch
+    {
+        DateOnly dateOnly => dateOnly,
+        DateTime dateTime => DateOnly.FromDateTime(dateTime),
+        _ => throw new NotSupportedException($""" "{value}" is not supported""")
+    };
 
     public override void SetValue(IDbDataParameter parameter, DateOnly value)
     {

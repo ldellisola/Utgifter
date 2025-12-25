@@ -145,10 +145,12 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.First();
 
-        return worksheet.Cells[1, 1].GetValue<string>().ToLowerInvariant() switch
+        return worksheet.Cells[1, 1].GetValue<string>().Trim().ToLowerInvariant() switch
         {
             "fakturadetaljer" => new FakturaReportParser(worksheet,PaymentProviderPrefixes).Parse(),
-            "transaksjonseksport" => new TransactionListParser(worksheet,PaymentProviderPrefixes).Parse()
+            "invoice details" => new FakturaReportParser(worksheet,PaymentProviderPrefixes).Parse(),
+            "transaksjonseksport" => new TransactionListParser(worksheet,PaymentProviderPrefixes).Parse(),
+            var str => throw new NotSupportedException($"""The report "{str}" is  not supported""")
         };
     }
 }
