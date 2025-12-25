@@ -27,7 +27,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
             req.Expenses.Select(t=> t with
             {
                 Store = t.Store.Trim().ToUpperInvariant(),
-                Category = t.Category?.Trim().ToUpperInvariant()
+                Category = t.Category?.Trim().ToUpperInvariant(),
+                Person = t.Person.Trim().ToUpperInvariant()
             
             })
         );
