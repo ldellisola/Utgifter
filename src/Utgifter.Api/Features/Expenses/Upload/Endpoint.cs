@@ -16,6 +16,11 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
     private readonly string _connectionString = dbOptions.Value.ConnectionString;
     private const string Xlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private const string Xls = "application/vnd.ms-excel";
+
+    private static readonly string[] PaymentProviderPrefixes =
+    [
+        "TM *", "LSP*", "SQ *", "VIPPS*", "ZETTLE_*", "SUMUP  *", "NYX*", "MS*", "KLARNA*"
+    ];
     
     public override void Configure()
     {
@@ -142,8 +147,8 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
 
         return worksheet.Cells[1, 1].GetValue<string>().ToLowerInvariant() switch
         {
-            "fakturadetaljer" => new FakturaReportParser(worksheet).Parse(),
-            "transaksjonseksport" => new TransactionListParser(worksheet).Parse()
+            "fakturadetaljer" => new FakturaReportParser(worksheet,PaymentProviderPrefixes).Parse(),
+            "transaksjonseksport" => new TransactionListParser(worksheet,PaymentProviderPrefixes).Parse()
         };
     }
 }

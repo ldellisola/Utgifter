@@ -5,7 +5,7 @@ using Utgifter.Api.Extensions;
 
 namespace Utgifter.Api.Features.Expenses.Upload.ExcelParsers;
 
-public partial class FakturaReportParser(ExcelWorksheet sheet)
+public partial class FakturaReportParser(ExcelWorksheet sheet, string[] paymentProviderPrefixes)
 {
     private int _row = 1;
     private State _state = State.WaitingForUser;
@@ -68,7 +68,7 @@ public partial class FakturaReportParser(ExcelWorksheet sheet)
         
         var store = sheet.Cells[_row, 3].GetValue<string>()
             .TrimStart()
-            .TrimStart(StringComparison.OrdinalIgnoreCase, "VIPPS*", "ZETTLE_*", "SUMUP  *", "NYX*", "MS*", "KLARNA*")
+            .TrimStart(StringComparison.OrdinalIgnoreCase, paymentProviderPrefixes)
             .Trim();
         var city = sheet.Cells[_row, 4].GetValue<string>();
         var currency = sheet.Cells[_row, 5].GetValue<string>();
@@ -82,7 +82,7 @@ public partial class FakturaReportParser(ExcelWorksheet sheet)
 
     private void ReadUser()
     {
-        _user = sheet.Cells[_row, 2].Text;
+        _user = sheet.Cells[_row, 2].Text.Trim().ToUpperInvariant();
         _state = State.ReadingTransactions;
         _row += 3;
     }
