@@ -44,15 +44,15 @@ public partial class FakturaReportParser(ExcelWorksheet sheet, string[] paymentP
     
     private void ReadingTransactions()
     {
-        var initialCell = sheet.Cells[_row, 1].Text;
-        if (initialCell.Equals("Totalbeløp", StringComparison.OrdinalIgnoreCase))
+        var initialCell = sheet.Cells[_row, 1].Text.Trim();
+        if (initialCell.Equals("Totalbeløp", StringComparison.OrdinalIgnoreCase) || initialCell.Equals("Total sum", StringComparison.OrdinalIgnoreCase))
         {
             _state = State.WaitingForUser;
             _row += 2;
             return;
         }
         
-        if (initialCell.StartsWith("Valutakurs", StringComparison.OrdinalIgnoreCase))
+        if (initialCell.StartsWith("Valutakurs", StringComparison.OrdinalIgnoreCase) || initialCell.StartsWith("Exchange Rate", StringComparison.OrdinalIgnoreCase))
         {
             _row++;
             return;
