@@ -150,6 +150,7 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> dbOptions) : Endpoint<R
             "fakturadetaljer" => new FakturaReportParser(worksheet,PaymentProviderPrefixes).Parse(),
             "invoice details" => new FakturaReportParser(worksheet,PaymentProviderPrefixes).Parse(),
             "transaksjonseksport" => new TransactionListParser(worksheet,PaymentProviderPrefixes).Parse(),
+            "transactions export" => new TransactionListParser(worksheet,PaymentProviderPrefixes).Parse(),
             var str => throw new NotSupportedException($"""The report "{str}" is  not supported""")
         };
     }
