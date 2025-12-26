@@ -102,7 +102,7 @@ categories.value = await getCategories()
               class="px-4"
             />
           </Cell>
-          <Cell class="flex gap-2">
+          <Cell class="flex justify-center gap-2">
             <Button variant="primary" @click="emit('rename', rule)">Rename Stores</Button>
             <Button variant="danger" @click="remove(rule)">Delete</Button>
           </Cell>
