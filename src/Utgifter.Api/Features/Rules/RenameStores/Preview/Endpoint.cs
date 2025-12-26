@@ -48,9 +48,10 @@ internal sealed class Endpoint(IOptions<DataBaseOptions> options) : Endpoint<Req
                 (@ExpectedStore LIKE '*%' AND @ExpectedStore NOT LIKE '%*' AND store LIKE '%' || SUBSTRING(@ExpectedStore FROM 2))
                 OR
                 (@ExpectedStore LIKE '*%' AND @ExpectedStore LIKE '%*' AND store LIKE '%' || SUBSTRING(@ExpectedStore FROM 2 FOR LENGTH(@ExpectedStore)-2) || '%'))
+                AND (@NewStore IS NULL OR store != @NewStore)
             ORDER BY date DESC
             """,
-            new { rule.ExpectedStore }
+            new { rule.ExpectedStore, rule.NewStore }
         );
 
         await Send.OkAsync(new Response(expenses.ToArray(), rule.ExpectedStore, rule.NewStore), ct);
