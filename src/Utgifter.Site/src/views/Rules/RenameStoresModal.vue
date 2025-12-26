@@ -62,9 +62,9 @@ async function apply() {
         No expenses found matching this store name.
       </div>
 
-      <div v-else class="overflow-x-auto">
+      <div v-else class="max-h-[60vh] overflow-y-auto overflow-x-auto">
         <table class="min-w-full table-auto border-collapse">
-          <thead>
+          <thead class="sticky top-0 bg-white">
             <tr class="bg-gray-50">
               <th class="px-3 py-2 text-left text-sm font-semibold border-b">Date</th>
               <th class="px-3 py-2 text-left text-sm font-semibold border-b">Person</th>
@@ -87,7 +87,7 @@ async function apply() {
         </table>
       </div>
 
-      <div class="mt-4 flex justify-end gap-2">
+      <div class="mt-4 flex justify-end gap-2 pt-2 border-t">
         <Button variant="primary" @click="emit('close')">Cancel</Button>
         <Button
           v-if="preview.newStore && preview.expenses.length > 0"
