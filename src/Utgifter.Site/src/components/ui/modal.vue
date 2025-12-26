@@ -1,5 +1,7 @@
 <script setup lang="ts">
-defineProps<{
+import { onKeyStroke } from '@vueuse/core'
+
+const props = defineProps<{
   open: boolean
   title: string
 }>()
@@ -7,6 +9,12 @@ defineProps<{
 const emit = defineEmits<{
   close: []
 }>()
+
+onKeyStroke('Escape', () => {
+  if (props.open) {
+    emit('close')
+  }
+})
 </script>
 
 <template>
