@@ -10,7 +10,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: []
-  applied: []
 }>()
 
 const preview = ref<RenamePreview | null>(null)
@@ -36,7 +35,6 @@ async function apply() {
   applying.value = true
   await applyRename(props.rule.id)
   applying.value = false
-  emit('applied')
   emit('close')
 }
 </script>

@@ -43,6 +43,6 @@ function closeRenameModal() {
       @edit="edit"
       @rename="openRenameModal"
     />
-    <RenameStoresModal :rule="renameRule" @close="closeRenameModal" @applied="loadRules" />
+    <RenameStoresModal :rule="renameRule" @close="closeRenameModal" />
   </div>
 </template>
