@@ -31,9 +31,7 @@ function closeRenameModal() {
 <template>
   <div class="flex justify-center gap-3 flex-col mx-11 mt-5">
     <div>
-      <Button variant="primary">
-        <RouterLink to="/">Go back</RouterLink>
-      </Button>
+      <Button variant="primary" to="/">Go back</Button>
     </div>
     <NewRule @created="loadRules" />
     <RulesTable

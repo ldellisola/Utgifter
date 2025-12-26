@@ -9,13 +9,23 @@ import {
 } from '@/api/server'
 import ExpensesTable from '@/components/ExpensesTable'
 import Button from '@/components/ui/button.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const report = ref<ExpenseReport | null>(null)
 const file = ref<File | undefined>(undefined)
+const error = ref<string | null>(null)
+
+async function uploadFile(fileToUpload: File) {
+  error.value = null
+  try {
+    report.value = await processExpenses(fileToUpload)
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'An unexpected error occurred'
+  }
+}
 
 const onDragOver = () => (isHovered.value = true)
 const isHovered = ref(false)
@@ -24,20 +34,31 @@ const onDrop = async (e: DragEvent) => {
   e.preventDefault()
   isHovered.value = false
   file.value = e.dataTransfer?.files?.[0]
-
-  report.value = await processExpenses(file.value!)
+  if (file.value) {
+    await uploadFile(file.value)
+  }
 }
 
 async function handleFileChange(e: Event) {
   const fileInput = e.target as HTMLInputElement
   file.value = fileInput.files?.[0]
-  report.value = await processExpenses(file.value!)
+  if (file.value) {
+    await uploadFile(file.value)
+  }
 }
 
 function triggerFileInput() {
   const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
   fileInput.click()
 }
+
+onMounted(async () => {
+  const stateFile = history.state?.file as File | undefined
+  if (stateFile) {
+    file.value = stateFile
+    await uploadFile(stateFile)
+  }
+})
 
 const newExpenses = ref<Expense[]>([])
 const existingExpenses = ref<Expense[]>([])
@@ -87,6 +108,13 @@ async function saveNewExpenses() {
   >
     <div class="text-center">
       <h1 class="text-2xl font-bold mb-4">Upload Expenses</h1>
+      <div
+        v-if="error"
+        class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg max-w-md"
+      >
+        <p class="font-semibold">Upload failed</p>
+        <p>{{ error }}</p>
+      </div>
       <form id="upload-form" class="flex flex-col items-center">
         <div>
           <input required type="file" @change="handleFileChange" class="hidden" />
@@ -101,9 +129,7 @@ async function saveNewExpenses() {
   </div>
   <div v-else class="flex justify-center gap-3 flex-col mx-11 mt-5">
     <div class="inline-flex flex-row justify-between">
-      <Button variant="danger">
-        <RouterLink to="/expenses">Cancel</RouterLink>
-      </Button>
+      <Button variant="danger" to="/expenses">Cancel</Button>
       <Button @click="saveNewExpenses">Upload New Expenses</Button>
     </div>
     <span class="font-bold text-2xl">New Expenses</span>

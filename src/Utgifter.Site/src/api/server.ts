@@ -23,13 +23,25 @@ export type ExpenseReport = {
   newExpenses: Expense[]
 }
 
+export type ApiError = {
+  status: string
+  code: number
+  reason: string
+  note: string
+}
+
 export async function processExpenses(file: File): Promise<ExpenseReport> {
   const formData = new FormData()
   formData.append('ExpenseFile', file)
 
-  return await fetch('/api/expenses/upload', { method: 'POST', body: formData }).then((response) =>
-    response.json()
-  )
+  const response = await fetch('/api/expenses/upload', { method: 'POST', body: formData })
+
+  if (!response.ok) {
+    const error: ApiError = await response.json()
+    throw new Error(error.reason)
+  }
+
+  return response.json()
 }
 
 export async function deleteExpense(expense: Expense): Promise<void> {
