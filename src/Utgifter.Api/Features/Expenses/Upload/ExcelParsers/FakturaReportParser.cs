@@ -57,8 +57,8 @@ public partial class FakturaReportParser(ExcelWorksheet sheet, string[] paymentP
             _row++;
             return;
         }
-        
-        var dateString = sheet.Cells[_row, 1].GetValue<string>();
+
+        var dateString = sheet.Cells[_row, 1].Text;
 
         if (!DateOnly.TryParseExact(dateString, "dd/MM/yyyy", out var date)
             && !DateOnly.TryParseExact(dateString, "d.M.yyyy", out date))
